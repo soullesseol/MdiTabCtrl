@@ -149,6 +149,9 @@ Public Class TabControl
         Friend Event TabPaintBorder(ByVal sender As Object, ByVal e As TabControl.TabPaintEventArgs)
         Friend Event SelectedChanged As EventHandler
 
+        Friend Event TabAdded As EventHandler
+        Friend Event TabRemoved As EventHandler
+
         Friend Sub New(ByVal Owner As TabControl)
             TabControl = Owner
         End Sub
@@ -221,6 +224,7 @@ Public Class TabControl
 
             ' Insert the tabpage in the collection
             List.Add(TabPage)
+            RaiseEvent TabAdded(Me, New EventArgs)
             TabControl.ResumeLayout()
             TabPage.ResumeLayout()
             Return TabPage
@@ -237,6 +241,7 @@ Public Class TabControl
                     TabControl.pnlBottom.Controls(1).Visible = True
                 End If
                 List.Remove(TabPage)
+                RaiseEvent TabRemoved(Me, New EventArgs)
             Catch ex As Exception
             End Try
         End Sub
@@ -532,6 +537,9 @@ Public Class TabControl
     <Description("Occurs when the TabControl Focus changes.")> _
     Public Event FocusedChanged As EventHandler
     Public Event SelectedTabChanged As EventHandler
+
+    Public Event TabAdded As EventHandler
+    Public Event TabRemoved As EventHandler
 
     Public Sub New()
         ' This call is required by the Windows Form Designer.
@@ -1676,6 +1684,14 @@ Public Class TabControl
 
     Private Sub Items_SelectedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Items.SelectedChanged
         RaiseEvent SelectedTabChanged(sender, e)
+    End Sub
+
+    Private Sub Items_TabAdded(ByVal sender As Object, ByVal e As System.EventArgs) Handles Items.TabAdded
+        RaiseEvent TabAdded(sender, e)
+    End Sub
+
+    Private Sub Items_TabRemoved(ByVal sender As Object, ByVal e As System.EventArgs) Handles Items.TabRemoved
+        RaiseEvent TabRemoved(sender, e)
     End Sub
 
     Private Sub Items_TabPaintBackground(ByVal sender As Object, ByVal e As TabPaintEventArgs) Handles Items.TabPaintBackground
